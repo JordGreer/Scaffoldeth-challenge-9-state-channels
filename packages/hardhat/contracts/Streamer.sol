@@ -14,6 +14,12 @@ contract Streamer is Ownable {
     mapping(address => uint256) canCloseAt;
 
     function fundChannel() public payable {
+        if(balances[msg.sender] != 0){
+            revert();
+        }
+        balances[msg.sender] += msg.value; 
+        emit Opened(msg.sender,msg.value);
+
         /*
         Checkpoint 3: fund a channel
 
@@ -22,6 +28,7 @@ contract Streamer is Ownable {
         - updates the balances mapping with the eth received in the function call
         - emits an Opened event
         */
+       
     }
 
     function timeLeft(address channel) public view returns (uint256) {
