@@ -475,6 +475,19 @@ function App(props) {
        *  and then use ethers.utils.verifyMessage() to confirm that voucher signer was
        *  `clientAddress`. (If it wasn't, log some error message and return).
       */
+      //Recreating the steps used in the reimburseService service to create a packed,
+      //hashed , and arrayified value.
+      const packed = ethers.utils.solidityPack(["uint256"], [updatedBalance]);
+      const hashed = ethers.utils.keccak256(packed);
+      const arrayified = ethers.utils.arrayify(hashed);
+    
+    
+      const signer = ethers.utils.verifyMessage(arrayified,voucher.data.signature);
+
+      if(signer != clientAddress) {
+        console.log("Signer not verified");
+        return;
+      }
 
       const existingVoucher = vouchers()[clientAddress];
 
