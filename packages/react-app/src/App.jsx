@@ -484,7 +484,7 @@ function App(props) {
     
       const signer = ethers.utils.verifyMessage(arrayified,voucher.data.signature);
 
-      if(signer != clientAddress) {
+      if(signer !== clientAddress) {
         console.log("Signer not verified");
         return;
       }
