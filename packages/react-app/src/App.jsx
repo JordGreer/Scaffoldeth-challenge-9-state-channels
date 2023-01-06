@@ -792,9 +792,9 @@ function App(props) {
                   dataSource={chainChannels.opened}
                   renderItem={clientAddress => (
                     <List.Item key={clientAddress}>
-                      <Address value={clientAddress} ensProvider={mainnetProvider} fontSize={12} />
+                      <Address value={clientAddress} ensProvider={mainnetProvider} fontSize={33} />
                       <TextArea
-                        style={{ margin: 5 }}
+                        style={{ margin: 200, height:150 }}
                         rows={3}
                         placeholder="Provide your wisdom here..."
                         id={"input-" + clientAddress}
@@ -804,7 +804,7 @@ function App(props) {
                         }}
                       ></TextArea>
 
-                      <Card style={{ margin: 5 }} id={`status-${clientAddress}`}>
+                      <Card style={{ margin: 5 }} id={`status-${clientAddress}`} fontSize={33}>
                         <div>
                           Served: <strong id={`provided-${clientAddress}`}>0</strong>&nbsp;chars
                         </div>
