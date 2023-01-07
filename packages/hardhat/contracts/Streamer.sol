@@ -36,7 +36,7 @@ contract Streamer is Ownable {
         return canCloseAt[channel] - block.timestamp;
     }
 
-    function withdrawEarnings(Voucher calldata voucher) public {
+    function withdrawEarnings(Voucher calldata voucher) onlyOwner public {
         // like the off-chain code, signatures are applied to the hash of the data
         // instead of the raw data itself
         bytes32 hashed = keccak256(abi.encode(voucher.updatedBalance));
@@ -66,6 +66,22 @@ contract Streamer is Ownable {
             - adjust the channel balance, and pay the contract owner. (Get the owner address withthe `owner()` function)
             - emit the Withdrawn event
         */
+
+        address recovered = ecrecover(prefixedHashed,voucher.sig.v,voucher.sig.r,voucher.sig.s);
+        console.log(recovered);
+
+        require(balances[recovered] > voucher.updatedBalance,"recoverd balance is less than updatedBalance");
+
+        uint256 payment = (balances[recovered] - voucher.updatedBalance);
+
+        balances[recovered] -= payment;
+        address owner = owner();
+        //uint256 weiPayment = payment * 10^18;
+        (bool sent, bytes memory data) = owner.call{value: payment}("");
+        require(sent, "Failed to send Ether");
+
+        emit Withdrawn(recovered,payment);
+
     }
 
     /*
@@ -77,6 +93,12 @@ contract Streamer is Ownable {
     - emits a Challenged event
     */
 
+    function challengeChannel() public {
+        require(balances[msg.sender] != 0);
+        canCloseAt[msg.sender] = block.timestamp + 30 seconds;
+        emit Challenged(msg.sender);
+    }
+
     /*
     Checkpoint 6b: Close the channel
 
@@ -86,6 +108,14 @@ contract Streamer is Ownable {
     - sends the channel's remaining funds to msg.sender, and sets the balance to 0
     - emits the Closed event
     */
+
+    function defundChannel()public{
+        require(canCloseAt[msg.sender] != 0 && block.timestamp > canCloseAt[msg.sender]);
+        
+        (bool sent, bytes memory data) = msg.sender.call{value: balances[msg.sender]}("");
+        require(sent, "Failed to send Ether");
+        emit Closed(msg.sender);
+    }
 
     struct Voucher {
         uint256 updatedBalance;

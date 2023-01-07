@@ -813,8 +813,7 @@ function App(props) {
                         </div>
                       </Card>
 
-                      {/* Checkpoint 5:
-                      <Button
+                      {<Button
                         style={{ margin: 5 }}
                         type="primary"
                         danger={chainChannels.challenged.includes(clientAddress)}
@@ -824,7 +823,7 @@ function App(props) {
                         }}
                       >
                         Cash out latest voucher
-                      </Button> */}
+                      </Button>}
                     </List.Item>
                   )}
                 ></List>
@@ -866,8 +865,7 @@ function App(props) {
                         </Card>
                       </Col>
 
-                      {/* Checkpoint 6: challenge & closure
-
+                      {
                       <Col span={5}>
                         <Button
                           disabled={hasClosingChannel()}
@@ -900,7 +898,7 @@ function App(props) {
                         >
                           Close and withdraw funds
                         </Button>
-                      </Col> */}
+                      </Col> }
                     </Row>
                   </div>
                 ) : hasClosedChannel() ? (
